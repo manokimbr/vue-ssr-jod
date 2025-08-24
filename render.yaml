@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: vue-ssr-jod
+    env: node
+    plan: starter
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_VERSION
+        value: 22.x
+    healthCheckPath: /healthz
