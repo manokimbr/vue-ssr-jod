@@ -2,8 +2,8 @@ import http from 'node:http'
 import { renderToString } from '@vue/server-renderer'
 import { createApp } from '../apps/site/src/adapter.js'
 
-const port = process.env.PORT || 3000
-const BASE_URL = process.env.BASE_URL || 'https://braziliandev.com'
+const port = process.env.PORT
+const BASE_URL = process.env.BASE_URL
 
 const server = http.createServer(async (req, res) => {
   // health check
@@ -44,20 +44,29 @@ ${urls.map(u => `
   // SSR padrão
   const app = createApp()
   const appHtml = await renderToString(app)
+
   const html = `<!doctype html>
-<html lang="en">
+<html lang="pt-BR">
   <head>
     <meta charset="utf-8">
-    <title>BrazilianDev — Vue 3 SSR, Node 22</title>
-    <meta name="description" content="Conteúdo PT/EN sobre SSR, SEO e carreira remota para devs.">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>BrazilianDev — Como aprender programação, trabalhar remoto e ganhar em dólar</title>
+    <meta name="description" content="Aprenda programação do zero e transforme sua carreira: passo a passo para conseguir trabalho remoto e ganhar em dólar. Conteúdos práticos sobre JavaScript para iniciantes, front-end, back-end, portfólio, LinkedIn, entrevistas e SEO básico para fazer seu site aparecer no Google e DuckDuckGo.">
     <link rel="canonical" href="${BASE_URL}/">
-    <meta property="og:title" content="BrazilianDev">
-    <meta property="og:description" content="Guia prático de SSR/SEO e conteúdo para devs.">
+
+    <!-- keywords (amplas e aspiracionais) -->
+    <meta name="keywords" content="aprender programação, como programar, programação do zero, curso de programação, desenvolvedor iniciante, primeiro emprego dev, junior developer, trabalho remoto, ganhar em dólar, freelancer, portfólio GitHub, LinkedIn para devs, currículo para programador, JavaScript para iniciantes, front-end, back-end, carreira de programação, como virar programador, vagas remotas, entrevistas de emprego, estudar programação, roadmap dev, HTML CSS JavaScript, aprender a codar, aprender a programar online, aprender programação rápido, sem faculdade, bootcamp, começar na programação, dev no exterior, remote job, dolar, como ganhar em dolar programando, SEO para iniciantes, aparecer no Google, DuckDuckGo, Google Search">
+
+    <!-- social preview básico -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="BrazilianDev — Aprender programação, trabalhar remoto e ganhar em dólar">
+    <meta property="og:description" content="Guia simples para iniciantes: como começar a programar, montar portfólio, conseguir trabalho remoto e ganhar em dólar.">
     <meta property="og:url" content="${BASE_URL}/">
     <meta name="twitter:card" content="summary_large_image">
   </head>
   <body><div id="app">${appHtml}</div></body>
 </html>`
+
   res.writeHead(200, { 'content-type': 'text/html; charset=utf-8' })
   res.end(html)
 })
