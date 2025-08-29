@@ -1,0 +1,119 @@
+{
+  "project": "vue-ssr-jod",
+  "generatedAt": "2025-08-29T21:10:35.550Z",
+  "root": [
+    {
+      "name": "apps",
+      "type": "dir",
+      "children": [
+        {
+          "name": "site",
+          "type": "dir",
+          "children": [
+            {
+              "name": "src",
+              "type": "dir",
+              "children": [
+                {
+                  "name": "adapter.js",
+                  "type": "file",
+                  "size": 173,
+                  "mtime": "2025-08-24T22:24:20.907Z",
+                  "rel": "apps/site/src/adapter.js"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "jod",
+      "type": "dir",
+      "children": [
+        {
+          "name": "memory",
+          "type": "dir",
+          "children": [
+            {
+              "name": "structure.json",
+              "type": "file",
+              "size": 2068,
+              "mtime": "2025-08-25T00:16:28.264Z",
+              "rel": "jod/memory/structure.json"
+            }
+          ]
+        },
+        {
+          "name": "ssrAwareness.js",
+          "type": "file",
+          "size": 1844,
+          "mtime": "2025-08-25T00:15:21.284Z",
+          "rel": "jod/ssrAwareness.js"
+        }
+      ]
+    },
+    {
+      "name": "server",
+      "type": "dir",
+      "children": [
+        {
+          "name": "index.js",
+          "type": "file",
+          "size": 810,
+          "mtime": "2025-08-24T22:41:53.514Z",
+          "rel": "server/index.js"
+        }
+      ]
+    },
+    {
+      "name": ".env",
+      "type": "file",
+      "size": 44,
+      "mtime": "2025-08-25T00:38:48.981Z",
+      "rel": ".env"
+    },
+    {
+      "name": ".env.example",
+      "type": "file",
+      "size": 533,
+      "mtime": "2025-08-28T16:44:59.520Z",
+      "rel": ".env.example"
+    },
+    {
+      "name": ".gitignore",
+      "type": "file",
+      "size": 186,
+      "mtime": "2025-08-25T00:37:46.751Z",
+      "rel": ".gitignore"
+    },
+    {
+      "name": "package.json",
+      "type": "file",
+      "size": 839,
+      "mtime": "2025-08-25T00:16:23.667Z",
+      "rel": "package.json"
+    },
+    {
+      "name": "README.md",
+      "type": "file",
+      "size": 111,
+      "mtime": "2025-08-24T22:13:18.892Z",
+      "rel": "README.md"
+    },
+    {
+      "name": "render.yaml",
+      "type": "file",
+      "size": 209,
+      "mtime": "2025-08-24T23:10:20.085Z",
+      "rel": "render.yaml"
+    },
+    {
+      "name": "vite.config.js",
+      "type": "file",
+      "size": 69,
+      "mtime": "2025-08-24T22:24:29.352Z",
+      "rel": "vite.config.js"
+    }
+  ]
+}
