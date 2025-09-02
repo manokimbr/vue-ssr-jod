@@ -1,11 +1,53 @@
 import http from 'node:http'
 import { renderToString } from '@vue/server-renderer'
 import { createApp } from '../apps/site/src/adapter.js'
+import { buildHead } from './seoHead.js'
 
 const port = process.env.PORT
 const BASE_URL = process.env.BASE_URL
 
+const CANONICAL_HOST = process.env.CANONICAL_HOST || (new URL(BASE_URL)).host
+const FORCE_HTTPS = String(process.env.FORCE_HTTPS).toLowerCase() === 'true'
+const FORCE_WWW = String(process.env.FORCE_WWW).toLowerCase() === 'true'
+const CACHE_HTML_SECONDS = Number(process.env.CACHE_HTML_SECONDS || 0)
+const ROBOTS_ALLOW = (process.env.ROBOTS_ALLOW || 'all').toLowerCase()
+
+function toWww(hostname) {
+  return hostname.startsWith('www.') ? hostname : `www.${hostname}`
+}
+function toRoot(hostname) {
+  return hostname.startsWith('www.') ? hostname.slice(4) : hostname
+}
+function isLocalHost(host = '') {
+  const h = host.split(':')[0]
+  return h === 'localhost' || h === '127.0.0.1'
+}
+function pickLocale(accept = '') {
+  // very simple: if header contains "en", return "en"; otherwise default to "pt-BR"
+  return /(^|,|\s)en(-|;|,|$)/i.test(accept || '') ? 'en' : 'pt-BR'
+}
+
 const server = http.createServer(async (req, res) => {
+  // --- Canonicalization middleware ---
+  const incomingHost = (req.headers['host'] || '').split(':')[0]
+  const forwardedProto = (req.headers['x-forwarded-proto'] || 'http').split(',')[0].trim()
+  let targetHost = CANONICAL_HOST
+
+  targetHost = FORCE_WWW ? toWww(targetHost) : toRoot(targetHost)
+  const needHttps = FORCE_HTTPS && forwardedProto !== 'https'
+  const needHost = incomingHost && incomingHost !== targetHost
+
+  if (!isLocalHost(incomingHost) && (needHttps || needHost)) {
+    const scheme = FORCE_HTTPS ? 'https' : (forwardedProto || 'https')
+    const location = `${scheme}://${targetHost}${req.url || '/'}`
+    res.writeHead(301, {
+      Location: location,
+      'Content-Type': 'text/plain; charset=utf-8',
+      'Cache-Control': 'public, max-age=0'
+    })
+    return res.end(`Redirecting to ${location}\n`)
+  }
+
   // health check
   if (req.url === '/healthz') {
     res.writeHead(200, { 'content-type': 'text/plain; charset=utf-8' })
@@ -14,60 +56,68 @@ const server = http.createServer(async (req, res) => {
 
   // robots.txt
   if (req.url === '/robots.txt') {
-    const robots = `User-agent: *
-Allow: /
-Sitemap: ${BASE_URL}/sitemap.xml
-`
+    const robots =
+      ROBOTS_ALLOW === 'none'
+        ? 'User-agent: *\nDisallow: /\n'
+        : `User-agent: *\nAllow: /\nSitemap: ${BASE_URL}/sitemap.xml\n`
     res.writeHead(200, { 'content-type': 'text/plain; charset=utf-8' })
     return res.end(robots)
   }
 
-  // sitemap.xml (por enquanto só a home; depois adicionamos outras rotas)
+  // sitemap.xml (for now only homepage; can be extended with more routes)
   if (req.url === '/sitemap.xml') {
     const now = new Date().toISOString()
-    const urls = [''] // '' = homepage
-    const xml =
-`<?xml version="1.0" encoding="UTF-8"?>
+    const urls = ['']
+    const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${urls.map(u => `
+${urls
+  .map(
+    (u) => `
   <url>
     <loc>${BASE_URL}${u}</loc>
     <lastmod>${now}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>${u === '' ? '1.0' : '0.8'}</priority>
-  </url>`).join('')}
+  </url>`
+  )
+  .join('')}
 </urlset>`
     res.writeHead(200, { 'content-type': 'application/xml; charset=utf-8' })
     return res.end(xml)
   }
 
-  // SSR padrão
-  const app = createApp()
+  // --- i18n: decide locale based on Accept-Language header ---
+  const locale = pickLocale(req.headers['accept-language'])
+
+  // --- SSR ---
+  const app = createApp({ locale })
   const appHtml = await renderToString(app)
 
+  // basic hreflangs for pt-BR and en (same path)
+  const hreflangs = [
+    { lang: 'pt-BR' },
+    { lang: 'en' }
+  ]
+
+  const head = buildHead({
+    baseUrl: BASE_URL,
+    path: req.url || '/',
+    lang: locale,
+    hreflangs
+  })
+
   const html = `<!doctype html>
-<html lang="pt-BR">
+<html lang="${head.lang}">
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>BrazilianDev — Como aprender programação, trabalhar remoto e ganhar em dólar</title>
-    <meta name="description" content="Aprenda programação do zero e transforme sua carreira: passo a passo para conseguir trabalho remoto e ganhar em dólar. Conteúdos práticos sobre JavaScript para iniciantes, front-end, back-end, portfólio, LinkedIn, entrevistas e SEO básico para fazer seu site aparecer no Google e DuckDuckGo.">
-    <link rel="canonical" href="${BASE_URL}/">
-
-    <!-- keywords (amplas e aspiracionais) -->
-    <meta name="keywords" content="aprender programação, como programar, programação do zero, curso de programação, desenvolvedor iniciante, primeiro emprego dev, junior developer, trabalho remoto, ganhar em dólar, freelancer, portfólio GitHub, LinkedIn para devs, currículo para programador, JavaScript para iniciantes, front-end, back-end, carreira de programação, como virar programador, vagas remotas, entrevistas de emprego, estudar programação, roadmap dev, HTML CSS JavaScript, aprender a codar, aprender a programar online, aprender programação rápido, sem faculdade, bootcamp, começar na programação, dev no exterior, remote job, dolar, como ganhar em dolar programando, SEO para iniciantes, aparecer no Google, DuckDuckGo, Google Search">
-
-    <!-- social preview básico -->
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="BrazilianDev — Aprender programação, trabalhar remoto e ganhar em dólar">
-    <meta property="og:description" content="Guia simples para iniciantes: como começar a programar, montar portfólio, conseguir trabalho remoto e ganhar em dólar.">
-    <meta property="og:url" content="${BASE_URL}/">
-    <meta name="twitter:card" content="summary_large_image">
+    ${head.htmlString}
   </head>
   <body><div id="app">${appHtml}</div></body>
 </html>`
 
-  res.writeHead(200, { 'content-type': 'text/html; charset=utf-8' })
+  const headers = { 'content-type': 'text/html; charset=utf-8' }
+  if (CACHE_HTML_SECONDS > 0) headers['Cache-Control'] = `public, max-age=${CACHE_HTML_SECONDS}`
+
+  res.writeHead(200, headers)
   res.end(html)
 })
 

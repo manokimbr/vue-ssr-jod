@@ -1,6 +1,6 @@
 {
   "project": "vue-ssr-jod",
-  "generatedAt": "2025-08-29T21:10:35.550Z",
+  "generatedAt": "2025-09-02T06:18:26.323Z",
   "root": [
     {
       "name": "apps",
@@ -17,9 +17,16 @@
                 {
                   "name": "adapter.js",
                   "type": "file",
-                  "size": 173,
-                  "mtime": "2025-08-24T22:24:20.907Z",
+                  "size": 976,
+                  "mtime": "2025-09-02T06:12:35.972Z",
                   "rel": "apps/site/src/adapter.js"
+                },
+                {
+                  "name": "i18n.js",
+                  "type": "file",
+                  "size": 827,
+                  "mtime": "2025-09-02T06:12:10.780Z",
+                  "rel": "apps/site/src/i18n.js"
                 }
               ]
             }
@@ -38,8 +45,8 @@
             {
               "name": "structure.json",
               "type": "file",
-              "size": 2068,
-              "mtime": "2025-08-25T00:16:28.264Z",
+              "size": 2599,
+              "mtime": "2025-09-02T05:32:08.610Z",
               "rel": "jod/memory/structure.json"
             }
           ]
@@ -60,24 +67,31 @@
         {
           "name": "index.js",
           "type": "file",
-          "size": 810,
-          "mtime": "2025-08-24T22:41:53.514Z",
+          "size": 3957,
+          "mtime": "2025-09-02T06:13:10.046Z",
           "rel": "server/index.js"
+        },
+        {
+          "name": "seoHead.js",
+          "type": "file",
+          "size": 3507,
+          "mtime": "2025-09-02T06:11:46.010Z",
+          "rel": "server/seoHead.js"
         }
       ]
     },
     {
       "name": ".env",
       "type": "file",
-      "size": 44,
-      "mtime": "2025-08-25T00:38:48.981Z",
+      "size": 304,
+      "mtime": "2025-09-02T06:02:21.092Z",
       "rel": ".env"
     },
     {
       "name": ".env.example",
       "type": "file",
-      "size": 533,
-      "mtime": "2025-08-28T16:44:59.520Z",
+      "size": 1429,
+      "mtime": "2025-09-02T06:04:51.410Z",
       "rel": ".env.example"
     },
     {
@@ -90,8 +104,8 @@
     {
       "name": "package.json",
       "type": "file",
-      "size": 839,
-      "mtime": "2025-08-25T00:16:23.667Z",
+      "size": 882,
+      "mtime": "2025-09-02T06:13:31.670Z",
       "rel": "package.json"
     },
     {
