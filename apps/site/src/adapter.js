@@ -3,9 +3,12 @@ import { createSSRApp, h } from 'vue'
 import { createI18nInstance } from './i18n.js'
 
 export function createApp(ctx = {}) {
+  const locale = ctx.locale || 'pt-BR'
+  const i18n = createI18nInstance(locale)
+
   const app = createSSRApp({
     render() {
-      const t = app.config.globalProperties.$t
+      const t = i18n.global.t
       return h('main', { class: 'container', style: baseStyle }, [
         h('h1', t('hero.title')),
         h('p', t('hero.lead')),
@@ -22,10 +25,7 @@ export function createApp(ctx = {}) {
     }
   })
 
-  // i18n com locale vindo do server (ctx.locale)
-  const i18n = createI18nInstance(ctx.locale || 'pt-BR')
   app.use(i18n)
-
   return app
 }
 
