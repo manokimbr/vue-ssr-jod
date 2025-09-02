@@ -21,8 +21,10 @@ const messages = {
 }
 
 export function createI18nInstance(locale = 'pt-BR') {
+  // Legacy + global injection so $t is available on app.config.globalProperties
   return createI18n({
-    legacy: false,
+    legacy: true,
+    globalInjection: true,
     locale,
     fallbackLocale: 'en',
     messages

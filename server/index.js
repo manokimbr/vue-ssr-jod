@@ -1,3 +1,6 @@
+// import flags BEFORE Vue / i18n are used
+import './intlify-flags.js'
+
 import http from 'node:http'
 import { renderToString } from '@vue/server-renderer'
 import { createApp } from '../apps/site/src/adapter.js'
