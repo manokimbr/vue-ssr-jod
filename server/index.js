@@ -26,9 +26,31 @@ function isLocalHost(host = '') {
   return h === 'localhost' || h === '127.0.0.1'
 }
 function pickLocale(accept = '') {
-  // very simple: if header contains "en", return "en"; otherwise default to "pt-BR"
-  return /(^|,|\s)en(-|;|,|$)/i.test(accept || '') ? 'en' : 'pt-BR'
+  // Parse simples de Accept-Language com suporte a q=
+  // Ex.: "pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7"
+  const supported = ['pt-BR', 'en']
+  if (!accept) return 'en'
+
+  const prefs = accept.split(',')
+    .map(s => s.trim())
+    .map((entry, idx) => {
+      const [tagRaw, ...params] = entry.split(';').map(x => x.trim())
+      const tag = tagRaw.toLowerCase()
+      const qParam = params.find(p => p.startsWith('q='))
+      const q = qParam ? parseFloat(qParam.slice(2)) : 1.0
+      // normaliza para os suportados
+      let norm = null
+      if (tag === 'pt-br' || tag === 'pt') norm = 'pt-BR'
+      else if (tag === 'en' || tag.startsWith('en-')) norm = 'en'
+      return { norm, q, idx }
+    })
+    .filter(x => x.norm && supported.includes(x.norm))
+    // ordena por q desc; em empate, pela ordem de aparição (idx asc)
+    .sort((a, b) => b.q - a.q || a.idx - b.idx)
+
+  return prefs[0]?.norm || 'pt-BR'
 }
+
 
 const server = http.createServer(async (req, res) => {
   // --- Canonicalization middleware ---
