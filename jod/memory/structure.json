@@ -1,6 +1,6 @@
 {
   "project": "vue-ssr-jod",
-  "generatedAt": "2025-09-02T22:30:38.069Z",
+  "generatedAt": "2025-11-24T19:31:09.193Z",
   "root": [
     {
       "name": "apps",
@@ -15,17 +15,22 @@
               "type": "dir",
               "children": [
                 {
+                  "name": "components",
+                  "type": "dir",
+                  "children": []
+                },
+                {
                   "name": "adapter.js",
                   "type": "file",
                   "size": 933,
-                  "mtime": "2025-09-02T07:06:01.546Z",
+                  "mtime": "2025-11-19T00:44:11.925Z",
                   "rel": "apps/site/src/adapter.js"
                 },
                 {
                   "name": "i18n.js",
                   "type": "file",
                   "size": 934,
-                  "mtime": "2025-09-02T06:58:21.150Z",
+                  "mtime": "2025-10-26T19:26:51.940Z",
                   "rel": "apps/site/src/i18n.js"
                 }
               ]
@@ -45,8 +50,8 @@
             {
               "name": "structure.json",
               "type": "file",
-              "size": 3031,
-              "mtime": "2025-09-02T06:18:26.324Z",
+              "size": 4255,
+              "mtime": "2025-11-18T23:23:49.243Z",
               "rel": "jod/memory/structure.json"
             }
           ]
@@ -61,14 +66,48 @@
       ]
     },
     {
+      "name": "public",
+      "type": "dir",
+      "children": [
+        {
+          "name": "apple-touch-icon.png",
+          "type": "file",
+          "size": 8174,
+          "mtime": "2025-10-27T06:56:08.000Z",
+          "rel": "public/apple-touch-icon.png"
+        },
+        {
+          "name": "favicon-16x16.png",
+          "type": "file",
+          "size": 640,
+          "mtime": "2025-10-27T06:56:08.000Z",
+          "rel": "public/favicon-16x16.png"
+        },
+        {
+          "name": "favicon-32x32.png",
+          "type": "file",
+          "size": 1424,
+          "mtime": "2025-10-27T06:56:08.000Z",
+          "rel": "public/favicon-32x32.png"
+        },
+        {
+          "name": "favicon.ico",
+          "type": "file",
+          "size": 15406,
+          "mtime": "2025-10-27T06:56:08.000Z",
+          "rel": "public/favicon.ico"
+        }
+      ]
+    },
+    {
       "name": "server",
       "type": "dir",
       "children": [
         {
           "name": "index.js",
           "type": "file",
-          "size": 4099,
-          "mtime": "2025-09-02T06:58:44.475Z",
+          "size": 4857,
+          "mtime": "2025-10-27T04:22:08.490Z",
           "rel": "server/index.js"
         },
         {
@@ -112,7 +151,7 @@
       "name": "package.json",
       "type": "file",
       "size": 882,
-      "mtime": "2025-09-02T06:13:31.670Z",
+      "mtime": "2025-11-19T00:44:11.926Z",
       "rel": "package.json"
     },
     {
@@ -133,7 +172,7 @@
       "name": "vite.config.js",
       "type": "file",
       "size": 69,
-      "mtime": "2025-08-24T22:24:29.352Z",
+      "mtime": "2025-11-18T23:20:14.342Z",
       "rel": "vite.config.js"
     }
   ]

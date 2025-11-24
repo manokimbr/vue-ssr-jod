@@ -2,9 +2,17 @@
 import './intlify-flags.js'
 
 import http from 'node:http'
+import fs from 'node:fs'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
+
 import { renderToString } from '@vue/server-renderer'
 import { createApp } from '../apps/site/src/adapter.js'
 import { buildHead } from './seoHead.js'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+const publicDir = path.resolve(__dirname, '../public')
 
 const port = process.env.PORT
 const BASE_URL = process.env.BASE_URL
@@ -51,8 +59,9 @@ function pickLocale(accept = '') {
   return prefs[0]?.norm || 'pt-BR'
 }
 
-
 const server = http.createServer(async (req, res) => {
+  const urlPath = (req.url || '/').split('?')[0]
+
   // --- Canonicalization middleware ---
   const incomingHost = (req.headers['host'] || '').split(':')[0]
   const forwardedProto = (req.headers['x-forwarded-proto'] || 'http').split(',')[0].trim()
@@ -74,13 +83,13 @@ const server = http.createServer(async (req, res) => {
   }
 
   // health check
-  if (req.url === '/healthz') {
+  if (urlPath === '/healthz') {
     res.writeHead(200, { 'content-type': 'text/plain; charset=utf-8' })
     return res.end('ok')
   }
 
   // robots.txt
-  if (req.url === '/robots.txt') {
+  if (urlPath === '/robots.txt') {
     const robots =
       ROBOTS_ALLOW === 'none'
         ? 'User-agent: *\nDisallow: /\n'
@@ -89,8 +98,32 @@ const server = http.createServer(async (req, res) => {
     return res.end(robots)
   }
 
-  // sitemap.xml (for now only homepage; can be extended with more routes)
-  if (req.url === '/sitemap.xml') {
+  if (
+    urlPath === '/favicon.ico' ||
+    urlPath === '/favicon-32x32.png' ||
+    urlPath === '/favicon-16x16.png' ||
+    urlPath === '/apple-touch-icon.png'
+  ) {
+    const fileName = urlPath.replace(/^\/+/, '')
+    const filePath = path.join(publicDir, fileName)
+
+    const contentType =
+      fileName.endsWith('.ico') ? 'image/x-icon'
+      : fileName.endsWith('.png') ? 'image/png'
+      : 'application/octet-stream'
+
+    fs.readFile(filePath, (err, data) => {
+      if (err) {
+        res.writeHead(404, { 'content-type': 'text/plain; charset=utf-8' })
+        return res.end('Not found')
+      }
+      res.writeHead(200, { 'content-type': contentType })
+      return res.end(data)
+    })
+    return
+  }
+
+  if (urlPath === '/sitemap.xml') {
     const now = new Date().toISOString()
     const urls = ['']
     const xml = `<?xml version="1.0" encoding="UTF-8"?>
@@ -126,7 +159,7 @@ ${urls
 
   const head = buildHead({
     baseUrl: BASE_URL,
-    path: req.url || '/',
+    path: urlPath || '/',
     lang: locale,
     hreflangs
   })
