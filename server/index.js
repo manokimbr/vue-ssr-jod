@@ -147,6 +147,30 @@ ${urls
   // --- i18n: decide locale based on Accept-Language header ---
   const locale = pickLocale(req.headers['accept-language'])
 
+if (urlPath.startsWith('/assets/')) {
+  const filePath = path.join(publicDir, urlPath.replace(/^\/+/, ''))
+
+  fs.readFile(filePath, (err, data) => {
+    if (err) {
+      res.writeHead(404, { 'content-type': 'text/plain; charset=utf-8' })
+      return res.end('Not found')
+    }
+
+    const contentType =
+      urlPath.endsWith('.js')
+        ? 'text/javascript; charset=utf-8'
+        : urlPath.endsWith('.css')
+          ? 'text/css; charset=utf-8'
+          : 'application/octet-stream'
+
+    res.writeHead(200, { 'content-type': contentType })
+    return res.end(data)
+  })
+  return
+}
+
+
+
   // --- SSR ---
   const app = createApp({ locale })
   const appHtml = await renderToString(app)
@@ -164,13 +188,18 @@ ${urls
     hreflangs
   })
 
-  const html = `<!doctype html>
+const html = `<!doctype html>
 <html lang="${head.lang}">
   <head>
     ${head.htmlString}
+    <link rel="stylesheet" href="/assets/style.css">
   </head>
-  <body><div id="app">${appHtml}</div></body>
+  <body>
+    <div id="app">${appHtml}</div>
+    <script type="module" src="/assets/client.js"></script>
+  </body>
 </html>`
+
 
   const headers = { 'content-type': 'text/html; charset=utf-8' }
   if (CACHE_HTML_SECONDS > 0) headers['Cache-Control'] = `public, max-age=${CACHE_HTML_SECONDS}`
