@@ -192,13 +192,22 @@ const html = `<!doctype html>
 <html lang="${head.lang}">
   <head>
     ${head.htmlString}
+
+    <!-- Preload CSS to avoid FOUC -->
+    <link rel="preload" href="/assets/style.css" as="style">
+
+    <!-- Main client stylesheet -->
     <link rel="stylesheet" href="/assets/style.css">
+
+    <!-- Vite hydration bundle -->
+    <script type="module" src="/assets/client.js"></script>
   </head>
+
   <body>
     <div id="app">${appHtml}</div>
-    <script type="module" src="/assets/client.js"></script>
   </body>
 </html>`
+
 
 
   const headers = { 'content-type': 'text/html; charset=utf-8' }
