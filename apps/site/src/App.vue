@@ -1,5 +1,21 @@
 <template>
   <VApp>
+    <PrimaryAppBar
+      title="BRAZILIANDEV"
+      @toggle-drawer="toggleDrawer"
+    />
+
+    <VNavigationDrawer v-model="drawer" temporary>
+      <VList>
+        <VListItem>
+          <VListItemTitle>Home</VListItemTitle>
+        </VListItem>
+        <VListItem>
+          <VListItemTitle>About</VListItemTitle>
+        </VListItem>
+      </VList>
+    </VNavigationDrawer>
+
     <VMain>
       <main class="container" :style="baseStyle">
         <h1>{{ $t('hero.title') }}</h1>
@@ -13,11 +29,7 @@
           {{ $t('cta.github') }}
         </a>
 
-        <div style="margin-top: 24px;">
-          <VBtn color="primary" variant="flat" @click="handleClick">
-            Vuetify is working ({{ count }})
-          </VBtn>
-        </div>
+        
       </main>
     </VMain>
   </VApp>
@@ -25,10 +37,17 @@
 
 <script setup>
 import { ref } from 'vue'
+import PrimaryAppBar from './components/PrimaryAppBar.vue'
 
 const count = ref(0)
+const drawer = ref(false)
+
 const handleClick = () => {
   count.value++
+}
+
+const toggleDrawer = () => {
+  drawer.value = !drawer.value
 }
 
 const baseStyle = `
