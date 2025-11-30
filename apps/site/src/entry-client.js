@@ -27,4 +27,14 @@ app.use(i18n)
 app.use(vuetify)
 
 // Hydrate SSR HTML in #app
+// Suppress expected hydration mismatch warning (intentional in hybrid SSR/CSR)
+const originalError = console.error
+console.error = function (...args) {
+  const msg = args[0]
+  if (typeof msg === 'string' && msg.includes('Hydration completed but contains mismatches')) {
+    return
+  }
+  originalError.apply(console, args)
+}
+
 app.mount('#app')
