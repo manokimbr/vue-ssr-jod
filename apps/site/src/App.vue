@@ -1,19 +1,55 @@
 <template>
-  <main class="container" :style="baseStyle">
-    <h1>{{ $t('hero.title') }}</h1>
-    <p>{{ $t('hero.lead') }}</p>
+  <VApp>
+    <PrimaryAppBar
+      title="BRAZILIANDEV"
+      @toggle-drawer="toggleDrawer"
+    />
 
-    <a
-      href="https://github.com/manokimbr/vue-ssr-jod"
-      target="_blank"
-      rel="noopener"
-    >
-      {{ $t('cta.github') }}
-    </a>
-  </main>
+    <VNavigationDrawer v-model="drawer" temporary>
+      <VList>
+        <VListItem>
+          <VListItemTitle>Home</VListItemTitle>
+        </VListItem>
+        <VListItem>
+          <VListItemTitle>About</VListItemTitle>
+        </VListItem>
+      </VList>
+    </VNavigationDrawer>
+
+    <VMain>
+      <main class="container" :style="baseStyle">
+        <h1>{{ $t('hero.title') }}</h1>
+        <p>{{ $t('hero.lead') }}</p>
+
+        <a
+          href="https://github.com/manokimbr/vue-ssr-jod"
+          target="_blank"
+          rel="noopener"
+        >
+          {{ $t('cta.github') }}
+        </a>
+
+        
+      </main>
+    </VMain>
+  </VApp>
 </template>
 
 <script setup>
+import { ref } from 'vue'
+import PrimaryAppBar from './components/PrimaryAppBar.vue'
+
+const count = ref(0)
+const drawer = ref(false)
+
+const handleClick = () => {
+  count.value++
+}
+
+const toggleDrawer = () => {
+  drawer.value = !drawer.value
+}
+
 const baseStyle = `
   max-width: 720px;
   margin: 48px auto;

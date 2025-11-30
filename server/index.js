@@ -1,6 +1,16 @@
 // import flags BEFORE Vue / i18n are used
 import './intlify-flags.js'
 
+// Suppress expected Vue SSR warnings for Vuetify components
+const originalWarn = console.warn
+console.warn = function (...args) {
+  const msg = args[0]
+  if (typeof msg === 'string' && msg.includes('[Vue warn]: Failed to resolve component:')) {
+    return
+  }
+  originalWarn.apply(console, args)
+}
+
 import http from 'node:http'
 import fs from 'node:fs'
 import path from 'node:path'
@@ -109,8 +119,8 @@ const server = http.createServer(async (req, res) => {
 
     const contentType =
       fileName.endsWith('.ico') ? 'image/x-icon'
-      : fileName.endsWith('.png') ? 'image/png'
-      : 'application/octet-stream'
+        : fileName.endsWith('.png') ? 'image/png'
+          : 'application/octet-stream'
 
     fs.readFile(filePath, (err, data) => {
       if (err) {
@@ -129,16 +139,16 @@ const server = http.createServer(async (req, res) => {
     const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${urls
-  .map(
-    (u) => `
+        .map(
+          (u) => `
   <url>
     <loc>${BASE_URL}${u}</loc>
     <lastmod>${now}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>${u === '' ? '1.0' : '0.8'}</priority>
   </url>`
-  )
-  .join('')}
+        )
+        .join('')}
 </urlset>`
     res.writeHead(200, { 'content-type': 'application/xml; charset=utf-8' })
     return res.end(xml)
@@ -146,6 +156,30 @@ ${urls
 
   // --- i18n: decide locale based on Accept-Language header ---
   const locale = pickLocale(req.headers['accept-language'])
+
+  if (urlPath.startsWith('/assets/')) {
+    const filePath = path.join(publicDir, urlPath.replace(/^\/+/, ''))
+
+    fs.readFile(filePath, (err, data) => {
+      if (err) {
+        res.writeHead(404, { 'content-type': 'text/plain; charset=utf-8' })
+        return res.end('Not found')
+      }
+
+      const contentType =
+        urlPath.endsWith('.js')
+          ? 'text/javascript; charset=utf-8'
+          : urlPath.endsWith('.css')
+            ? 'text/css; charset=utf-8'
+            : 'application/octet-stream'
+
+      res.writeHead(200, { 'content-type': contentType })
+      return res.end(data)
+    })
+    return
+  }
+
+
 
   // --- SSR ---
   const app = createApp({ locale })
@@ -168,9 +202,14 @@ ${urls
 <html lang="${head.lang}">
   <head>
     ${head.htmlString}
+    <link rel="stylesheet" href="/assets/style.css">
   </head>
-  <body><div id="app">${appHtml}</div></body>
+  <body>
+    <div id="app">${appHtml}</div>
+    <script type="module" src="/assets/client.js"></script>
+  </body>
 </html>`
+
 
   const headers = { 'content-type': 'text/html; charset=utf-8' }
   if (CACHE_HTML_SECONDS > 0) headers['Cache-Control'] = `public, max-age=${CACHE_HTML_SECONDS}`

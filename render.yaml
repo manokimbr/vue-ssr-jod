@@ -2,7 +2,7 @@ services:
   - type: web
     name: vue-ssr-jod
     env: node
-    buildCommand: yarn install
+    buildCommand: yarn install && yarn build:client
     startCommand: yarn start
     envVars:
       - key: NODE_VERSION
