@@ -1,9 +1,7 @@
 // apps/site/src/entry-client.js
-import 'vuetify/styles' // CSS bundled by Vite for the browser
+import 'vuetify/styles'
 
-import { createSSRApp } from 'vue'
-import App from './App.vue'
-import { createI18nInstance } from './i18n.js'
+import { createApp } from './adapter.js'
 
 import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'
@@ -15,19 +13,16 @@ const locale =
     ? 'pt-BR'
     : 'en'
 
-const app = createSSRApp(App)
+const { app, router } = createApp({ locale })
 
-const i18n = createI18nInstance(locale)
 const vuetify = createVuetify({
   components,
   directives,
 })
 
-app.use(i18n)
 app.use(vuetify)
 
-// Hydrate SSR HTML in #app
-// Suppress expected hydration mismatch warning (intentional in hybrid SSR/CSR)
+// suppress expected hydration warning
 const originalError = console.error
 console.error = function (...args) {
   const msg = args[0]
@@ -37,4 +32,6 @@ console.error = function (...args) {
   originalError.apply(console, args)
 }
 
-app.mount('#app')
+router.isReady().then(() => {
+  app.mount('#app')
+})

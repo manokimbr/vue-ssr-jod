@@ -1,18 +1,20 @@
 // apps/site/src/adapter.js
 import { createSSRApp } from 'vue'
-import { createI18nInstance } from './i18n.js'
 import App from './App.vue'
-import { createMyVuetify } from './vuetify.js'
+import { createI18nInstance } from './i18n.js'
+import { createRouterInstance } from './router.js'
 
 export function createApp(ctx = {}) {
+  const locale = ctx.locale || 'pt-BR'
+
   const app = createSSRApp(App)
 
-  const i18n = createI18nInstance(ctx.locale || 'pt-BR')
-  const vuetify = createMyVuetify()
+  const i18n = createI18nInstance(locale)
+  const router = createRouterInstance()
 
   app.use(i18n)
-  app.use(vuetify)
+  app.use(router)
 
-  // server/index.js expects the app instance
-  return app
+  // server and client both expect { app, router }
+  return { app, router }
 }
