@@ -181,9 +181,13 @@ ${urls
 
 
 
-  // --- SSR ---
-  const app = createApp({ locale })
-  const appHtml = await renderToString(app)
+// --- SSR ---
+const { app, router } = createApp({ locale })
+
+await router.push(urlPath || '/')
+await router.isReady()
+
+const appHtml = await renderToString(app)
 
   // basic hreflangs for pt-BR and en (same path)
   const hreflangs = [

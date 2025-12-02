@@ -1,7 +1,7 @@
 <!-- apps/site/src/components/PrimaryAppBar.vue -->
 <template>
   <VAppBar
-    color="primary"
+    color="green"
     density="comfortable"
     elevation="1"
   >
