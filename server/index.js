@@ -33,6 +33,17 @@ const FORCE_WWW = String(process.env.FORCE_WWW).toLowerCase() === 'true'
 const CACHE_HTML_SECONDS = Number(process.env.CACHE_HTML_SECONDS || 0)
 const ROBOTS_ALLOW = (process.env.ROBOTS_ALLOW || 'all').toLowerCase()
 
+// Per-route SEO overrides (title/description/etc.)
+const ROUTE_META = {
+  '/about': {
+    title: 'About BrazilianDev — vue-ssr-jod hybrid SSR/CSR boilerplate',
+    description:
+      'Learn what BrazilianDev is about: a Vue 3 + Node.js hybrid SSR/CSR boilerplate focused on SEO, remote work and earning in USD, built for developers who want fast, semantic, indexable apps.'
+  }
+  // Add more routes later if needed:
+  // '/blog': { title: 'Blog — BrazilianDev', description: '...' }
+}
+
 function toWww(hostname) {
   return hostname.startsWith('www.') ? hostname : `www.${hostname}`
 }
@@ -135,7 +146,8 @@ const server = http.createServer(async (req, res) => {
 
   if (urlPath === '/sitemap.xml') {
     const now = new Date().toISOString()
-    const urls = ['']
+    // include home ('') and /about
+    const urls = ['', '/about']
     const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${urls
@@ -179,15 +191,13 @@ ${urls
     return
   }
 
+  // --- SSR ---
+  const { app, router } = createApp({ locale })
 
+  await router.push(urlPath || '/')
+  await router.isReady()
 
-// --- SSR ---
-const { app, router } = createApp({ locale })
-
-await router.push(urlPath || '/')
-await router.isReady()
-
-const appHtml = await renderToString(app)
+  const appHtml = await renderToString(app)
 
   // basic hreflangs for pt-BR and en (same path)
   const hreflangs = [
@@ -195,11 +205,14 @@ const appHtml = await renderToString(app)
     { lang: 'en' }
   ]
 
+  const override = ROUTE_META[urlPath] || {}
+
   const head = buildHead({
     baseUrl: BASE_URL,
     path: urlPath || '/',
     lang: locale,
-    hreflangs
+    hreflangs,
+    override
   })
 
   const html = `<!doctype html>
@@ -213,7 +226,6 @@ const appHtml = await renderToString(app)
     <script type="module" src="/assets/client.js"></script>
   </body>
 </html>`
-
 
   const headers = { 'content-type': 'text/html; charset=utf-8' }
   if (CACHE_HTML_SECONDS > 0) headers['Cache-Control'] = `public, max-age=${CACHE_HTML_SECONDS}`
