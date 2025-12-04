@@ -7,11 +7,10 @@ import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 
-const htmlLang = document.documentElement.lang || 'en'
-const locale =
-  htmlLang === 'pt-BR' || htmlLang === 'pt'
-    ? 'pt-BR'
-    : 'en'
+import { SUPPORTED_LOCALES, DEFAULT_LOCALE } from './config/languages.js'
+
+const htmlLang = document.documentElement.lang || DEFAULT_LOCALE
+const locale = SUPPORTED_LOCALES.includes(htmlLang) ? htmlLang : DEFAULT_LOCALE
 
 const { app, router } = createApp({ locale })
 

@@ -34,6 +34,7 @@ const CACHE_HTML_SECONDS = Number(process.env.CACHE_HTML_SECONDS || 0)
 const ROBOTS_ALLOW = (process.env.ROBOTS_ALLOW || 'all').toLowerCase()
 
 import { ROUTE_META } from '../apps/site/src/seoMeta.js'
+import { SUPPORTED_LOCALES, DEFAULT_LOCALE } from '../apps/site/src/config/languages.js'
 
 function toWww(hostname) {
   return hostname.startsWith('www.') ? hostname : `www.${hostname}`
@@ -48,8 +49,8 @@ function isLocalHost(host = '') {
 function pickLocale(accept = '') {
   // Parse simples de Accept-Language com suporte a q=
   // Ex.: "pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7"
-  const supported = ['pt-BR', 'en']
-  if (!accept) return 'en'
+  const supported = SUPPORTED_LOCALES
+  if (!accept) return DEFAULT_LOCALE
 
   const prefs = accept.split(',')
     .map(s => s.trim())
@@ -68,7 +69,7 @@ function pickLocale(accept = '') {
     // ordena por q desc; em empate, pela ordem de aparição (idx asc)
     .sort((a, b) => b.q - a.q || a.idx - b.idx)
 
-  return prefs[0]?.norm || 'pt-BR'
+  return prefs[0]?.norm || DEFAULT_LOCALE
 }
 
 const server = http.createServer(async (req, res) => {
@@ -157,8 +158,21 @@ ${urls
     return res.end(xml)
   }
 
-  // --- i18n: decide locale based on Accept-Language header ---
-const locale = pickLocale(req.headers['accept-language'])
+  // --- i18n: decide locale based on URL prefix or Accept-Language ---
+  let locale = pickLocale(req.headers['accept-language'])
+  let normalizedPath = urlPath
+
+  // Check for locale prefix
+  const pathSegments = urlPath.split('/')
+  const potentialLocale = pathSegments[1] // /en/... -> 'en'
+
+  if (SUPPORTED_LOCALES.includes(potentialLocale)) {
+    locale = potentialLocale
+    // Strip locale from path for normalization (e.g. /en/about -> /about)
+    // If path is just /en, normalized becomes /
+    normalizedPath = '/' + pathSegments.slice(2).join('/')
+  }
+
 
   if (urlPath.startsWith('/assets/')) {
     const filePath = path.join(publicDir, urlPath.replace(/^\/+/, ''))
@@ -190,20 +204,21 @@ const locale = pickLocale(req.headers['accept-language'])
 
   const appHtml = await renderToString(app)
 
-  // basic hreflangs for pt-BR and en (same path)
+  // basic hreflangs for pt-BR and en
+  // We want to point to the explicit locale versions
   const hreflangs = [
-    { lang: 'pt-BR' },
-    { lang: 'en' }
+    { lang: 'pt-BR', path: `/pt-BR${normalizedPath === '/' ? '' : normalizedPath}` },
+    { lang: 'en', path: `/en${normalizedPath === '/' ? '' : normalizedPath}` }
   ]
 
   // Resolve SEO overrides from seoMeta.js
   // Structure: ROUTE_META[route][lang]
-  const routeData = ROUTE_META[urlPath] || {}
+  const routeData = ROUTE_META[normalizedPath] || {}
   const override = routeData[locale] || routeData['en'] || {}
 
   const head = buildHead({
     baseUrl: BASE_URL,
-    path: urlPath || '/',
+    path: normalizedPath || '/',
     lang: locale,
     hreflangs,
     override
