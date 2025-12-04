@@ -33,16 +33,7 @@ const FORCE_WWW = String(process.env.FORCE_WWW).toLowerCase() === 'true'
 const CACHE_HTML_SECONDS = Number(process.env.CACHE_HTML_SECONDS || 0)
 const ROBOTS_ALLOW = (process.env.ROBOTS_ALLOW || 'all').toLowerCase()
 
-// Per-route SEO overrides (title/description/etc.)
-const ROUTE_META = {
-  '/about': {
-    title: 'About BrazilianDev — vue-ssr-jod hybrid SSR/CSR boilerplate',
-    description:
-      'Learn what BrazilianDev is about: a Vue 3 + Node.js hybrid SSR/CSR boilerplate focused on SEO, remote work and earning in USD, built for developers who want fast, semantic, indexable apps.'
-  }
-  // Add more routes later if needed:
-  // '/blog': { title: 'Blog — BrazilianDev', description: '...' }
-}
+import { ROUTE_META } from '../apps/site/src/seoMeta.js'
 
 function toWww(hostname) {
   return hostname.startsWith('www.') ? hostname : `www.${hostname}`
@@ -167,7 +158,7 @@ ${urls
   }
 
   // --- i18n: decide locale based on Accept-Language header ---
-  const locale = pickLocale(req.headers['accept-language'])
+const locale = pickLocale(req.headers['accept-language'])
 
   if (urlPath.startsWith('/assets/')) {
     const filePath = path.join(publicDir, urlPath.replace(/^\/+/, ''))
@@ -205,7 +196,10 @@ ${urls
     { lang: 'en' }
   ]
 
-  const override = ROUTE_META[urlPath] || {}
+  // Resolve SEO overrides from seoMeta.js
+  // Structure: ROUTE_META[route][lang]
+  const routeData = ROUTE_META[urlPath] || {}
+  const override = routeData[locale] || routeData['en'] || {}
 
   const head = buildHead({
     baseUrl: BASE_URL,
