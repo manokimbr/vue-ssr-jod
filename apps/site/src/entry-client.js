@@ -31,6 +31,23 @@ console.error = function (...args) {
   originalError.apply(console, args)
 }
 
+console.log('Client entry executing...')
+
 router.isReady().then(() => {
-  app.mount('#app')
+  console.log('Router is ready. Mounting app...')
+  try {
+    app.mount('#app')
+    console.log('App mounted successfully.')
+  } catch (e) {
+    console.error('Error during app.mount():', e)
+  }
+
+  if (window.__HYDRATION_COMPLETE__) {
+    console.log('Calling __HYDRATION_COMPLETE__')
+    window.__HYDRATION_COMPLETE__()
+  } else {
+    console.error('window.__HYDRATION_COMPLETE__ is missing!')
+  }
+}).catch(err => {
+  console.error('Error in router.isReady():', err)
 })
