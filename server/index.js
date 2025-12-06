@@ -147,7 +147,7 @@ ${urls
         .map(
           (u) => `
   <url>
-    <loc>${BASE_URL}${u}</loc>
+    <loc>${BASE_URL}${u === '' ? '/' : u}</loc>
     <lastmod>${now}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>${u === '' ? '1.0' : '0.8'}</priority>
@@ -197,33 +197,60 @@ ${urls
     return
   }
 
-  // --- SSR ---
-  const { app, router } = createApp({ locale })
+// --- SSR ---
+const { app, router } = createApp({ locale })
 
-  await router.push(urlPath || '/')
-  await router.isReady()
+await router.push(urlPath || '/')
+await router.isReady()
 
-  const appHtml = await renderToString(app)
+const appHtml = await renderToString(app)
 
-  // basic hreflangs for pt-BR and en
-  // We want to point to the explicit locale versions
-  const hreflangs = [
-    { lang: 'pt-BR', path: `/pt-BR${normalizedPath === '/' ? '' : normalizedPath}` },
-    { lang: 'en', path: `/en${normalizedPath === '/' ? '' : normalizedPath}` }
-  ]
+// logical route (without locale prefix) used for ROUTE_META
+const logicalPath = normalizedPath || '/'
 
-  // Resolve SEO overrides from seoMeta.js
-  // Structure: ROUTE_META[route][lang]
-  const routeData = ROUTE_META[normalizedPath] || {}
-  const override = routeData[locale] || routeData['en'] || {}
+// real request path (for canonical / og:url)
+// strip query/hash and normalize leading slash
+let requestPath = (urlPath || '/').split(/[?#]/)[0] || '/'
+if (!requestPath.startsWith('/')) requestPath = '/' + requestPath
 
-  const head = buildHead({
-    baseUrl: BASE_URL,
-    path: normalizedPath || '/',
-    lang: locale,
-    hreflangs,
-    override
-  })
+// basic hreflangs for pt-BR and en
+const hreflangs = [
+  {
+    lang: 'pt-BR',
+    path: `/pt-BR${logicalPath === '/' ? '' : logicalPath}`
+  },
+  {
+    lang: 'en',
+    path: `/en${logicalPath === '/' ? '' : logicalPath}`
+  }
+]
+
+hreflangs.push({
+lang: 'x-default',
+path: logicalPath
+})
+
+
+
+// Resolve SEO overrides from seoMeta.js
+// Structure: ROUTE_META[route][lang]
+const routeData = ROUTE_META[logicalPath] || {}
+const override = routeData[locale] || routeData['en'] || {}
+
+// Inject the real URL path as canonicalPath
+const overrideWithCanonical = {
+  ...override,
+  canonicalPath: requestPath
+}
+
+const head = buildHead({
+  baseUrl: BASE_URL,
+  path: logicalPath,          // used for default meta
+  lang: locale,
+  hreflangs,
+  override: overrideWithCanonical
+})
+
 
   const html = `<!doctype html>
 <html lang="${head.lang}">
