@@ -15,9 +15,16 @@
     "type": "git",
     "url": "git+https://github.com/manokimbr/vue-ssr-jod.git"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "vue",
+    "ssr",
+    "vuetify",
+    "nodejs",
+    "seo",
+    "hybrid"
+  ],
+  "author": "manokimbr",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/manokimbr/vue-ssr-jod/issues"
   },

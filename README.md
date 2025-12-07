@@ -1,43 +1,82 @@
 # vue-ssr-jod
 
-A minimal **Vue 3 + Node.js 22** SSR setup, handwritten from scratch as part of the **JOD ecosystem**.  
-Built to serve fast, SEO-optimized landing pages with client-side Vuetify styling.
+A minimal **Vue 3 + Node.js 22** SSR setup, built from scratch as part of the **JOD ecosystem**.
+Designed to serve fast, SEO-optimized landing pages with a rich client-side Vuetify 3 experience.
 
 ---
 
-## Overview
+## 🚀 Features
 
-`vue-ssr-jod` provides a lightweight, framework-free SSR renderer for Vue 3:
-
-### Server-side
-- `<title>`, `<meta>`, canonical and hreflang generation  
-- Locale detection via `Accept-Language`  
-- Sitemap + robots.txt  
-- HTTPS/WWW canonicalization  
-- Native Node 22 ESM server (no bundlers)  
-- JOD introspection (`npm run brain`)
-
-### Client-side
-- Full Vuetify 3 UI (CSS, components, interactivity)  
-- Hydration on top of SSR semantic HTML  
-- SEO-correct initial render
+- **Hybrid SSR/CSR Architecture**:
+    - **Server**: Renders semantic HTML, meta tags, and critical CSS for instant FCP and perfect SEO.
+    - **Client**: Hydrates into a full Single Page Application (SPA) with Vuetify components and interactivity.
+- **SEO Optimized**:
+    - Dynamic `<title>`, `<meta>`, and `hreflang` generation.
+    - Canonical URL handling (HTTPS/WWW enforcement).
+    - `sitemap.xml` and `robots.txt` generation.
+- **Performance**:
+    - **Node 22 ESM**: Native ES modules on the server (no Webpack/Vite server bundle).
+    - **Smart Hydration**: Custom loader prevents FOUC (Flash of Unstyled Content) and hydration mismatches.
+    - **Caching**: Configurable HTML caching strategies.
+- **Developer Experience**:
+    - **JOD Introspection**: `npm run brain` analyzes project structure for AI agents.
+    - **No Magic**: Transparent server logic using standard Node.js APIs.
 
 ---
 
-## Rendering Model
+## 🏗️ Architecture
 
-This project uses a **hybrid SSR/CSR architecture**:
+### Server-Side (`server/`)
+- **`index.js`**: The core HTTP server. Handles routing, locale detection, and renders the Vue app to a string.
+- **`appLoader.js`**: Injects a lightweight loading screen that persists until hydration is complete, masking layout shifts.
+- **`seoHead.js`**: Manages all head tags (title, meta, link) dynamically based on the current route and locale.
 
-> **SSR handles SEO and content.**  
-> **CSR handles layout, styling, and UI components.**
+### Client-Side (`apps/site/`)
+- **`entry-client.js`**: The entry point for the browser. Mounts the Vue app and initializes Vuetify.
+- **`vuetify.js`**: Configures the UI framework, themes, and icons.
+- **`components/`**: Shared Vue components used by both server and client.
 
-On the server, Vuetify components are not fully resolved.  
-On the client, Vuetify mounts normally and applies full styling and DOM structure.
+---
 
-This is the intended behavior for this project’s goals:
-- Minimal SSR surface  
-- Full SEO coverage  
-- Full Vuetify experience on the client  
-- No Node CSS loaders or complex SSR pipelines
+## 🛠️ Getting Started
 
-No functionality, styling, or SEO integrity is affected.
+### Prerequisites
+- Node.js 22+ (Required for native ESM support)
+
+### Installation
+
+```bash
+npm install
+```
+
+### Development
+
+Run the server in development mode (with live reload support via Vite for client assets):
+
+```bash
+npm run dev
+```
+
+### Production
+
+Build the client assets and start the production server:
+
+```bash
+npm run build:client
+npm start
+```
+
+### Introspection
+
+Run the JOD introspection tool to generate a project structure snapshot for AI agents:
+
+```bash
+npm run brain
+```
+Output is saved to `jod/memory/structure.json`.
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

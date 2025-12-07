@@ -1,6 +1,6 @@
 {
   "project": "vue-ssr-jod",
-  "generatedAt": "2025-12-07T15:42:08.814Z",
+  "generatedAt": "2025-12-07T18:07:01.459Z",
   "root": [
     {
       "name": "apps",
@@ -21,8 +21,8 @@
                     {
                       "name": "PrimaryAppBar.vue",
                       "type": "file",
-                      "size": 1156,
-                      "mtime": "2025-12-04T19:01:25.916Z",
+                      "size": 1255,
+                      "mtime": "2025-12-07T17:54:23.022Z",
                       "rel": "apps/site/src/components/PrimaryAppBar.vue"
                     }
                   ]
@@ -35,7 +35,7 @@
                       "name": "languages.js",
                       "type": "file",
                       "size": 177,
-                      "mtime": "2025-12-06T04:32:24.872Z",
+                      "mtime": "2025-12-07T17:54:23.022Z",
                       "rel": "apps/site/src/config/languages.js"
                     }
                   ]
@@ -64,7 +64,7 @@
                   "name": "adapter.js",
                   "type": "file",
                   "size": 497,
-                  "mtime": "2025-12-04T19:01:25.916Z",
+                  "mtime": "2025-12-07T16:05:53.785Z",
                   "rel": "apps/site/src/adapter.js"
                 },
                 {
@@ -77,8 +77,8 @@
                 {
                   "name": "entry-client.js",
                   "type": "file",
-                  "size": 1417,
-                  "mtime": "2025-12-05T19:55:48.954Z",
+                  "size": 1779,
+                  "mtime": "2025-12-07T17:54:23.022Z",
                   "rel": "apps/site/src/entry-client.js"
                 },
                 {
@@ -91,30 +91,23 @@
                 {
                   "name": "pageStyles.js",
                   "type": "file",
-                  "size": 279,
-                  "mtime": "2025-12-04T19:01:25.917Z",
+                  "size": 918,
+                  "mtime": "2025-12-07T17:54:23.022Z",
                   "rel": "apps/site/src/pageStyles.js"
                 },
                 {
                   "name": "router.js",
                   "type": "file",
                   "size": 734,
-                  "mtime": "2025-12-04T20:31:22.650Z",
+                  "mtime": "2025-12-07T17:54:23.022Z",
                   "rel": "apps/site/src/router.js"
                 },
                 {
                   "name": "seoMeta.js",
                   "type": "file",
                   "size": 1989,
-                  "mtime": "2025-12-04T19:24:28.330Z",
+                  "mtime": "2025-12-07T17:54:23.023Z",
                   "rel": "apps/site/src/seoMeta.js"
-                },
-                {
-                  "name": "vuetify.js",
-                  "type": "file",
-                  "size": 204,
-                  "mtime": "2025-12-02T16:48:08.256Z",
-                  "rel": "apps/site/src/vuetify.js"
                 }
               ]
             }
@@ -133,8 +126,8 @@
             {
               "name": "structure.json",
               "type": "file",
-              "size": 6499,
-              "mtime": "2025-12-02T16:48:08.260Z",
+              "size": 9765,
+              "mtime": "2025-12-07T18:01:52.635Z",
               "rel": "jod/memory/structure.json"
             }
           ]
@@ -160,42 +153,70 @@
               "name": "apple-touch-icon.png",
               "type": "file",
               "size": 8174,
-              "mtime": "2025-12-07T15:38:04.133Z",
+              "mtime": "2025-12-07T17:50:34.793Z",
               "rel": "public/assets/apple-touch-icon.png"
             },
             {
               "name": "client.js",
               "type": "file",
-              "size": 688576,
-              "mtime": "2025-12-07T15:38:04.659Z",
+              "size": 689295,
+              "mtime": "2025-12-07T17:50:35.602Z",
               "rel": "public/assets/client.js"
             },
             {
               "name": "favicon-16x16.png",
               "type": "file",
               "size": 640,
-              "mtime": "2025-12-07T15:38:04.133Z",
+              "mtime": "2025-12-07T17:50:34.861Z",
               "rel": "public/assets/favicon-16x16.png"
             },
             {
               "name": "favicon-32x32.png",
               "type": "file",
               "size": 1424,
-              "mtime": "2025-12-07T15:38:04.133Z",
+              "mtime": "2025-12-07T17:50:34.862Z",
               "rel": "public/assets/favicon-32x32.png"
             },
             {
               "name": "favicon.ico",
               "type": "file",
               "size": 15406,
-              "mtime": "2025-12-07T15:38:04.133Z",
+              "mtime": "2025-12-07T17:50:34.862Z",
               "rel": "public/assets/favicon.ico"
+            },
+            {
+              "name": "materialdesignicons-webfont.eot",
+              "type": "file",
+              "size": 1307880,
+              "mtime": "2025-12-07T17:50:35.602Z",
+              "rel": "public/assets/materialdesignicons-webfont.eot"
+            },
+            {
+              "name": "materialdesignicons-webfont.ttf",
+              "type": "file",
+              "size": 1307660,
+              "mtime": "2025-12-07T17:50:35.602Z",
+              "rel": "public/assets/materialdesignicons-webfont.ttf"
+            },
+            {
+              "name": "materialdesignicons-webfont.woff",
+              "type": "file",
+              "size": 587984,
+              "mtime": "2025-12-07T17:50:35.602Z",
+              "rel": "public/assets/materialdesignicons-webfont.woff"
+            },
+            {
+              "name": "materialdesignicons-webfont.woff2",
+              "type": "file",
+              "size": 403216,
+              "mtime": "2025-12-07T17:50:35.601Z",
+              "rel": "public/assets/materialdesignicons-webfont.woff2"
             },
             {
               "name": "style.css",
               "type": "file",
-              "size": 514541,
-              "mtime": "2025-12-07T15:38:04.659Z",
+              "size": 838692,
+              "mtime": "2025-12-07T17:50:35.602Z",
               "rel": "public/assets/style.css"
             }
           ]
@@ -238,14 +259,14 @@
           "name": "appLoader.js",
           "type": "file",
           "size": 2202,
-          "mtime": "2025-12-07T15:37:52.921Z",
+          "mtime": "2025-12-07T17:54:23.023Z",
           "rel": "server/appLoader.js"
         },
         {
           "name": "index.js",
           "type": "file",
-          "size": 8528,
-          "mtime": "2025-12-06T05:09:22.452Z",
+          "size": 8750,
+          "mtime": "2025-12-07T17:54:23.023Z",
           "rel": "server/index.js"
         },
         {
@@ -259,7 +280,7 @@
           "name": "seoHead.js",
           "type": "file",
           "size": 4037,
-          "mtime": "2025-12-06T05:09:50.005Z",
+          "mtime": "2025-12-07T17:54:23.023Z",
           "rel": "server/seoHead.js"
         }
       ]
@@ -286,17 +307,24 @@
       "rel": ".gitignore"
     },
     {
+      "name": "LICENSE",
+      "type": "file",
+      "size": 1066,
+      "mtime": "2025-12-07T18:04:20.119Z",
+      "rel": "LICENSE"
+    },
+    {
       "name": "package.json",
       "type": "file",
-      "size": 1120,
-      "mtime": "2025-12-04T19:01:25.917Z",
+      "size": 1234,
+      "mtime": "2025-12-07T18:04:47.707Z",
       "rel": "package.json"
     },
     {
       "name": "README.md",
       "type": "file",
-      "size": 1265,
-      "mtime": "2025-11-30T19:00:07.139Z",
+      "size": 2509,
+      "mtime": "2025-12-07T18:04:08.408Z",
       "rel": "README.md"
     },
     {
@@ -309,8 +337,8 @@
     {
       "name": "vite.config.js",
       "type": "file",
-      "size": 431,
-      "mtime": "2025-11-25T03:02:14.276Z",
+      "size": 611,
+      "mtime": "2025-12-07T17:54:23.023Z",
       "rel": "vite.config.js"
     }
   ]
