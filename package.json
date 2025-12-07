@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/manokimbr/vue-ssr-jod#readme",
   "dependencies": {
+    "@mdi/font": "^7.4.47",
     "@vue/server-renderer": "^3.5.19",
     "vue": "^3.5.19",
     "vue-esm-loader": "^1.0.0",

@@ -189,7 +189,13 @@ ${urls
           ? 'text/javascript; charset=utf-8'
           : urlPath.endsWith('.css')
             ? 'text/css; charset=utf-8'
-            : 'application/octet-stream'
+            : urlPath.endsWith('.woff')
+              ? 'font/woff'
+              : urlPath.endsWith('.woff2')
+                ? 'font/woff2'
+                : urlPath.endsWith('.ttf')
+                  ? 'font/ttf'
+                  : 'application/octet-stream'
 
       res.writeHead(200, { 'content-type': contentType })
       return res.end(data)

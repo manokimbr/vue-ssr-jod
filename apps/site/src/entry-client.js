@@ -1,14 +1,17 @@
 // apps/site/src/entry-client.js
 import 'vuetify/styles'
+import '@mdi/font/css/materialdesignicons.css'
+
 
 import { createApp } from './adapter.js'
 
 import { createVuetify } from 'vuetify'
+import { aliases, mdi } from 'vuetify/iconsets/mdi'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 
 import { SUPPORTED_LOCALES, DEFAULT_LOCALE } from './config/languages.js'
-import { theme } from './vuetify.js'
+import { theme } from './pageStyles.js'
 
 const htmlLang = document.documentElement.lang || DEFAULT_LOCALE
 const locale = SUPPORTED_LOCALES.includes(htmlLang) ? htmlLang : DEFAULT_LOCALE
@@ -19,6 +22,11 @@ const isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: da
 theme.defaultTheme = isDark ? 'dark' : 'light'
 
 const vuetify = createVuetify({
+  icons: {
+    defaultSet: 'mdi',
+    aliases,
+    sets: { mdi },
+  },
   components,
   directives,
   theme,

@@ -21,6 +21,10 @@
       />
     </VBtn>
 
+    <VBtn icon>
+      <VIcon>mdi-brain</VIcon>
+    </VBtn>
+
     <!-- Title + subline -->
     <div class="d-flex flex-column">
       <span class="text-subtitle-1 font-weight-medium">
