@@ -1,7 +1,7 @@
 <!-- apps/site/src/components/PrimaryAppBar.vue -->
 <template>
   <VAppBar
-    color="green"
+    color="primary"
     density="comfortable"
     elevation="1"
   >
@@ -19,6 +19,10 @@
         height="24"
         style="border-radius: 6px;"
       />
+    </VBtn>
+
+    <VBtn icon>
+      <VIcon>mdi-brain</VIcon>
     </VBtn>
 
     <!-- Title + subline -->

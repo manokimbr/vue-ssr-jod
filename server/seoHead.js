@@ -45,6 +45,11 @@ function normalizePath(pathname) {
     const cleanPath = normalizePath(path)
     const title = (override.title || DEFAULTS.title).trim()
     const description = (override.description || DEFAULTS.description).trim()
+    let keywords = override.keywords || DEFAULTS.keywords
+    if (Array.isArray(keywords)) {
+      keywords = keywords.join(', ')
+    }
+    keywords = keywords.trim()
     const canonicalHref = joinUrl(baseUrl, override.canonicalPath || cleanPath)
   
     const social = [
@@ -57,7 +62,7 @@ function normalizePath(pathname) {
   
     const allMetas = [
       { name: 'description', content: description },
-      { name: 'keywords', content: DEFAULTS.keywords },
+      { name: 'keywords', content: keywords },
       ...social,
       ...metaExtras
     ]
