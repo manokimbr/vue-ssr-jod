@@ -8,7 +8,11 @@ const messages = {
       lead:
         'Guia direto ao ponto: primeiros passos em programação, portfólio, LinkedIn, entrevistas e SEO para aparecer no Google.'
     },
-    cta: { github: 'Ver no GitHub' }
+    cta: { github: 'Ver no GitHub' },
+    about: {
+      title: 'Sobre o BrazilianDev',
+      description: 'BrazilianDev — boilerplate híbrido SSR/CSR vue-ssr-jod, focado em SEO, trabalho remoto e ganhar em dólar.'
+    }
   },
   en: {
     hero: {
@@ -16,7 +20,11 @@ const messages = {
       lead:
         'Straightforward guide: first steps in coding, portfolio, LinkedIn, interviews, and SEO to show up on Google.'
     },
-    cta: { github: 'View on GitHub' }
+    cta: { github: 'View on GitHub' },
+    about: {
+      title: 'About BrazilianDev',
+      description: 'BrazilianDev — vue-ssr-jod hybrid SSR/CSR boilerplate, focused on SEO, remote work and earning in USD.'
+    }
   }
 }
 
