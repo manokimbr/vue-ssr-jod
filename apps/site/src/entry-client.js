@@ -8,15 +8,20 @@ import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 
 import { SUPPORTED_LOCALES, DEFAULT_LOCALE } from './config/languages.js'
+import { theme } from './vuetify.js'
 
 const htmlLang = document.documentElement.lang || DEFAULT_LOCALE
 const locale = SUPPORTED_LOCALES.includes(htmlLang) ? htmlLang : DEFAULT_LOCALE
 
 const { app, router } = createApp({ locale })
 
+const isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+theme.defaultTheme = isDark ? 'dark' : 'light'
+
 const vuetify = createVuetify({
   components,
   directives,
+  theme,
 })
 
 app.use(vuetify)

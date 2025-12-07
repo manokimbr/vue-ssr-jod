@@ -34,7 +34,7 @@ export function getLoaderHtml() {
         }
         .spinner {
           border-color: #333;
-          border-top-color: #bb86fc;
+          border-top-color: green;
         }
       }
     </style>
@@ -43,7 +43,7 @@ export function getLoaderHtml() {
     </div>
     <script>
       (function() {
-        var MIN_DURATION = 3000;
+        var MIN_DURATION = 1000;
         var start = Date.now();
         var loader = document.getElementById('app-loader');
         var isHydrated = false;
@@ -74,13 +74,13 @@ export function getLoaderHtml() {
           }
         }
 
-        // Failsafe: remove after 10s even if hydration fails
+        // Failsafe: remove after 5s even if hydration fails
         setTimeout(function() {
           if (loader && loader.parentNode) {
             console.warn('Loader removed by failsafe');
             remove();
           }
-        }, 10000);
+        }, 5000);
       })();
     </script>
   `
