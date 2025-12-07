@@ -21,33 +21,17 @@
       />
     </VBtn>
 
-    <VBtn 
-      icon
-      aria-label="Brain"
-    >
-      <VIcon>mdi-brain</VIcon>
-    </VBtn>
-
-    <!-- Title + subline -->
-    <div class="d-flex flex-column">
-      <span class="text-subtitle-1 font-weight-medium">
-        {{ title }}
-      </span>
-      <span class="text-caption text-white text-high-emphasis">
-        vue-ssr-jod: Hybrid SSR/CSR · Fast, semantic, SEO-ready Vue
-      </span>
-    </div>
-
     <VSpacer />
 
     <!-- Right-side action -->
     <VBtn
       variant="text"
+      aria-label="github"
       href="https://github.com/manokimbr/vue-ssr-jod"
       target="_blank"
       rel="noopener"
     >
-      GitHub
+    <VIcon >mdi-github</VIcon >
     </VBtn>
   </VAppBar>
 </template>
