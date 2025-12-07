@@ -1,9 +1,8 @@
 <template>
   <main class="container" :style="baseStyle">
-    <h1>About BrazilianDev</h1>
+    <h1>{{ $t('about.title') }}</h1>
     <p>
-      BrazilianDev — vue-ssr-jod hybrid SSR/CSR boilerplate,
-      focused on SEO, remote work and earning in USD.
+      {{ $t('about.description') }}
     </p>
   </main>
 </template>

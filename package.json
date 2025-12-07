@@ -15,14 +15,22 @@
     "type": "git",
     "url": "git+https://github.com/manokimbr/vue-ssr-jod.git"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "vue",
+    "ssr",
+    "vuetify",
+    "nodejs",
+    "seo",
+    "hybrid"
+  ],
+  "author": "manokimbr",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/manokimbr/vue-ssr-jod/issues"
   },
   "homepage": "https://github.com/manokimbr/vue-ssr-jod#readme",
   "dependencies": {
+    "@mdi/font": "^7.4.47",
     "@vue/server-renderer": "^3.5.19",
     "vue": "^3.5.19",
     "vue-esm-loader": "^1.0.0",

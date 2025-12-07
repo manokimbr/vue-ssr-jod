@@ -33,6 +33,10 @@ const FORCE_WWW = String(process.env.FORCE_WWW).toLowerCase() === 'true'
 const CACHE_HTML_SECONDS = Number(process.env.CACHE_HTML_SECONDS || 0)
 const ROBOTS_ALLOW = (process.env.ROBOTS_ALLOW || 'all').toLowerCase()
 
+import { ROUTE_META } from '../apps/site/src/seoMeta.js'
+import { SUPPORTED_LOCALES, DEFAULT_LOCALE } from '../apps/site/src/config/languages.js'
+import { getLoaderHtml } from './appLoader.js'
+
 function toWww(hostname) {
   return hostname.startsWith('www.') ? hostname : `www.${hostname}`
 }
@@ -46,8 +50,8 @@ function isLocalHost(host = '') {
 function pickLocale(accept = '') {
   // Parse simples de Accept-Language com suporte a q=
   // Ex.: "pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7"
-  const supported = ['pt-BR', 'en']
-  if (!accept) return 'en'
+  const supported = SUPPORTED_LOCALES
+  if (!accept) return DEFAULT_LOCALE
 
   const prefs = accept.split(',')
     .map(s => s.trim())
@@ -66,7 +70,7 @@ function pickLocale(accept = '') {
     // ordena por q desc; em empate, pela ordem de aparição (idx asc)
     .sort((a, b) => b.q - a.q || a.idx - b.idx)
 
-  return prefs[0]?.norm || 'pt-BR'
+  return prefs[0]?.norm || DEFAULT_LOCALE
 }
 
 const server = http.createServer(async (req, res) => {
@@ -135,14 +139,15 @@ const server = http.createServer(async (req, res) => {
 
   if (urlPath === '/sitemap.xml') {
     const now = new Date().toISOString()
-    const urls = ['']
+    // include home ('') and /about
+    const urls = ['', '/about']
     const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${urls
         .map(
           (u) => `
   <url>
-    <loc>${BASE_URL}${u}</loc>
+    <loc>${BASE_URL}${u === '' ? '/' : u}</loc>
     <lastmod>${now}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>${u === '' ? '1.0' : '0.8'}</priority>
@@ -154,8 +159,21 @@ ${urls
     return res.end(xml)
   }
 
-  // --- i18n: decide locale based on Accept-Language header ---
-  const locale = pickLocale(req.headers['accept-language'])
+  // --- i18n: decide locale based on URL prefix or Accept-Language ---
+  let locale = pickLocale(req.headers['accept-language'])
+  let normalizedPath = urlPath
+
+  // Check for locale prefix
+  const pathSegments = urlPath.split('/')
+  const potentialLocale = pathSegments[1] // /en/... -> 'en'
+
+  if (SUPPORTED_LOCALES.includes(potentialLocale)) {
+    locale = potentialLocale
+    // Strip locale from path for normalization (e.g. /en/about -> /about)
+    // If path is just /en, normalized becomes /
+    normalizedPath = '/' + pathSegments.slice(2).join('/')
+  }
+
 
   if (urlPath.startsWith('/assets/')) {
     const filePath = path.join(publicDir, urlPath.replace(/^\/+/, ''))
@@ -171,15 +189,19 @@ ${urls
           ? 'text/javascript; charset=utf-8'
           : urlPath.endsWith('.css')
             ? 'text/css; charset=utf-8'
-            : 'application/octet-stream'
+            : urlPath.endsWith('.woff')
+              ? 'font/woff'
+              : urlPath.endsWith('.woff2')
+                ? 'font/woff2'
+                : urlPath.endsWith('.ttf')
+                  ? 'font/ttf'
+                  : 'application/octet-stream'
 
       res.writeHead(200, { 'content-type': contentType })
       return res.end(data)
     })
     return
   }
-
-
 
 // --- SSR ---
 const { app, router } = createApp({ locale })
@@ -189,18 +211,52 @@ await router.isReady()
 
 const appHtml = await renderToString(app)
 
-  // basic hreflangs for pt-BR and en (same path)
-  const hreflangs = [
-    { lang: 'pt-BR' },
-    { lang: 'en' }
-  ]
+// logical route (without locale prefix) used for ROUTE_META
+const logicalPath = normalizedPath || '/'
 
-  const head = buildHead({
-    baseUrl: BASE_URL,
-    path: urlPath || '/',
-    lang: locale,
-    hreflangs
-  })
+// real request path (for canonical / og:url)
+// strip query/hash and normalize leading slash
+let requestPath = (urlPath || '/').split(/[?#]/)[0] || '/'
+if (!requestPath.startsWith('/')) requestPath = '/' + requestPath
+
+// basic hreflangs for pt-BR and en
+const hreflangs = [
+  {
+    lang: 'pt-BR',
+    path: `/pt-BR${logicalPath === '/' ? '' : logicalPath}`
+  },
+  {
+    lang: 'en',
+    path: `/en${logicalPath === '/' ? '' : logicalPath}`
+  }
+]
+
+hreflangs.push({
+lang: 'x-default',
+path: logicalPath
+})
+
+
+
+// Resolve SEO overrides from seoMeta.js
+// Structure: ROUTE_META[route][lang]
+const routeData = ROUTE_META[logicalPath] || {}
+const override = routeData[locale] || routeData['en'] || {}
+
+// Inject the real URL path as canonicalPath
+const overrideWithCanonical = {
+  ...override,
+  canonicalPath: requestPath
+}
+
+const head = buildHead({
+  baseUrl: BASE_URL,
+  path: logicalPath,          // used for default meta
+  lang: locale,
+  hreflangs,
+  override: overrideWithCanonical
+})
+
 
   const html = `<!doctype html>
 <html lang="${head.lang}">
@@ -209,11 +265,11 @@ const appHtml = await renderToString(app)
     <link rel="stylesheet" href="/assets/style.css">
   </head>
   <body>
+    ${getLoaderHtml()}
     <div id="app">${appHtml}</div>
     <script type="module" src="/assets/client.js"></script>
   </body>
 </html>`
-
 
   const headers = { 'content-type': 'text/html; charset=utf-8' }
   if (CACHE_HTML_SECONDS > 0) headers['Cache-Control'] = `public, max-age=${CACHE_HTML_SECONDS}`
