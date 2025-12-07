@@ -21,7 +21,10 @@
       />
     </VBtn>
 
-    <VBtn icon>
+    <VBtn 
+      icon
+      aria-label="Brain"
+    >
       <VIcon>mdi-brain</VIcon>
     </VBtn>
 
